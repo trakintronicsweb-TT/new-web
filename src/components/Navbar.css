@@ -1,0 +1,922 @@
+/* ==========================================================================
+   CSS Custom Properties (Design Tokens)
+   ========================================================================== */
+:root {
+  /* Colors - ElectroCo Brand Palette */
+  --color-primary: #0ea5e9;
+  --color-primary-dark: #0284c7;
+  --color-primary-light: #38bdf8;
+  --color-primary-rgb: 14, 165, 233;
+  
+  --color-secondary: #8b5cf6;
+  --color-secondary-dark: #7c3aed;
+  --color-secondary-light: #a78bfa;
+  
+  --color-dark: #111827;
+  --color-dark-rgb: 17, 24, 39;
+  --color-darker: #0f172a;
+  --color-dark-light: #1e293b;
+  
+  --color-light: #f8fafc;
+  --color-gray: #64748b;
+  --color-gray-light: #94a3b8;
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, 
+    var(--color-primary) 0%, 
+    var(--color-secondary) 100%);
+  --gradient-dark: linear-gradient(135deg, 
+    var(--color-dark) 0%, 
+    var(--color-darker) 100%);
+  --gradient-glow: linear-gradient(90deg,
+    transparent 0%,
+    rgba(var(--color-primary-rgb), 0.2) 50%,
+    transparent 100%);
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+               0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+               0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+               0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-glow: 0 0 20px rgba(var(--color-primary-rgb), 0.3);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* Border Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-full: 9999px;
+  
+  /* Z-index layers */
+  --z-below: -1;
+  --z-base: 1;
+  --z-dropdown: 10;
+  --z-sticky: 100;
+  --z-navbar: 1000;
+  --z-overlay: 1100;
+  --z-modal: 1200;
+  
+  /* Typography */
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  
+  /* Spacing */
+  --space-unit: 0.25rem;
+  --spacing-xs: calc(var(--space-unit) * 1);
+  --spacing-sm: calc(var(--space-unit) * 2);
+  --spacing-md: calc(var(--space-unit) * 4);
+  --spacing-lg: calc(var(--space-unit) * 6);
+  --spacing-xl: calc(var(--space-unit) * 8);
+  
+  /* Animations */
+  --pulse-duration: 8s;
+  --float-duration: 6s;
+  --glow-duration: 3s;
+}
+
+/* ==========================================================================
+   Reset & Base Styles
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body.nav-menu-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+/* ==========================================================================
+   Navbar Container
+   ========================================================================== */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--gradient-dark);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  z-index: var(--z-navbar);
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all var(--transition-normal);
+  transform: translateY(0);
+  will-change: transform, background, backdrop-filter;
+}
+
+.navbar.navbar-hidden {
+  transform: translateY(-100%);
+}
+
+.navbar-scrolled {
+  background: rgba(var(--color-dark-rgb), 0.95);
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  padding: 0.5rem 0;
+  box-shadow: var(--shadow-xl);
+  border-bottom: 1px solid rgba(var(--color-primary-rgb), 0.1);
+}
+
+.navbar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--gradient-glow);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+  z-index: var(--z-below);
+}
+
+.navbar:hover::before {
+  opacity: 1;
+}
+
+.navbar-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+/* ==========================================================================
+   Logo Styles
+   ========================================================================== */
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  position: relative;
+  z-index: var(--z-base);
+  transition: transform var(--transition-bounce);
+}
+
+.navbar-logo:hover {
+  /* transform: scale(1.05); removed to stop movement */
+}
+
+.navbar-logo img {
+  height: 65px;
+  width: auto;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  transition: all var(--transition-normal);
+  /* animation: float var(--float-duration) ease-in-out infinite; removed to stop movement */
+}
+
+.navbar-logo:hover img {
+  filter: drop-shadow(var(--shadow-glow));
+}
+
+.navbar-logo::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--gradient-primary);
+  transform: translateX(-50%);
+  transition: width var(--transition-normal);
+  border-radius: var(--radius-full);
+}
+
+.navbar-logo:hover::after {
+  width: 100%;
+}
+
+/* Logo Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(1deg);
+  }
+}
+
+/* ==========================================================================
+   Desktop Navigation
+   ========================================================================== */
+.navbar-menu-desktop {
+  display: flex;
+  gap: var(--spacing-sm);
+  position: relative;
+}
+
+.nav-link {
+  position: relative;
+  color: var(--color-light);
+  text-decoration: none;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  letter-spacing: 0.025em;
+  transition: all var(--transition-normal);
+  background: transparent;
+  border: 1px solid transparent;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.nav-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-primary);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  z-index: var(--z-below);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--color-primary);
+  transform: translateX(-50%);
+  transition: width var(--transition-normal);
+  border-radius: var(--radius-full);
+}
+
+.nav-link:hover {
+  color: white;
+  border-color: rgba(var(--color-primary-rgb), 0.3);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.nav-link:hover::before {
+  opacity: 0.1;
+}
+
+.nav-link:hover::after {
+  width: 60%;
+}
+
+.nav-link.active {
+  color: white;
+  background: linear-gradient(135deg, 
+    rgba(var(--color-primary-rgb), 0.2) 0%,
+    rgba(var(--color-secondary-rgb), 0.1) 100%);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.4);
+  box-shadow: 
+    var(--shadow-inner),
+    var(--shadow-glow),
+    0 0 0 1px rgba(var(--color-primary-rgb), 0.2);
+  animation: pulse-glow var(--pulse-duration) ease-in-out infinite;
+}
+
+.nav-link.active::before {
+  opacity: 1;
+}
+
+.nav-link.active::after {
+  width: 80%;
+  background: var(--gradient-primary);
+}
+
+/* ==========================================================================
+   Mobile Menu Toggle Button
+   ========================================================================== */
+.navbar-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  width: 48px;
+  height: 48px;
+  position: relative;
+  z-index: calc(var(--z-navbar) + 1);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-normal);
+}
+
+.navbar-toggle:hover {
+  background: rgba(var(--color-primary-rgb), 0.1);
+  transform: rotate(90deg);
+}
+
+.navbar-toggle-icon {
+  display: block;
+  position: relative;
+  width: 24px;
+  height: 2px;
+  background: var(--color-light);
+  margin: 0 auto;
+  transition: all var(--transition-fast);
+}
+
+.navbar-toggle-icon::before,
+.navbar-toggle-icon::after {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 2px;
+  background: var(--color-light);
+  left: 0;
+  transition: all var(--transition-normal);
+  transform-origin: center;
+}
+
+.navbar-toggle-icon::before {
+  top: -8px;
+}
+
+.navbar-toggle-icon::after {
+  bottom: -8px;
+}
+
+.navbar-toggle.open .navbar-toggle-icon {
+  background: transparent;
+}
+
+.navbar-toggle.open .navbar-toggle-icon::before {
+  top: 0;
+  transform: rotate(45deg);
+  background: var(--color-primary);
+}
+
+.navbar-toggle.open .navbar-toggle-icon::after {
+  bottom: 0;
+  transform: rotate(-45deg);
+  background: var(--color-primary);
+}
+
+/* ==========================================================================
+   Mobile Navigation Overlay
+   ========================================================================== */
+.nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--color-dark-rgb), 0.95) 0%,
+    rgba(0, 0, 0, 0.95) 100%
+  );
+  backdrop-filter: blur(15px) saturate(200%);
+  -webkit-backdrop-filter: blur(15px) saturate(200%);
+  z-index: var(--z-overlay);
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-normal);
+}
+
+.nav-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  animation: fadeIn var(--transition-normal);
+}
+
+/* ==========================================================================
+   Mobile Navigation Menu
+   ========================================================================== */
+.nav-mobile-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 320px;
+  max-width: 85vw;
+  height: 100vh;
+  background: linear-gradient(160deg, 
+    var(--color-dark) 0%,
+    var(--color-darker) 100%);
+  z-index: calc(var(--z-overlay) + 1);
+  transform: translateX(-100%);
+  transition: transform var(--transition-slow) cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+  border-right: 1px solid rgba(var(--color-primary-rgb), 0.2);
+}
+
+.nav-mobile-menu::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: 
+    radial-gradient(circle at 30% 20%, rgba(var(--color-primary-rgb), 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 70% 80%, rgba(var(--color-secondary-rgb), 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.nav-mobile-menu.active {
+  transform: translateX(0);
+  animation: slideIn var(--transition-normal);
+}
+
+.nav-mobile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md);
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.nav-mobile-logo img {
+  height: 36px;
+  width: auto;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.nav-close-btn {
+  background: rgba(var(--color-primary-rgb), 0.1);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.3);
+  color: var(--color-light);
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-normal);
+}
+
+.nav-close-btn:hover {
+  background: rgba(var(--color-primary-rgb), 0.3);
+  border-color: var(--color-primary);
+  transform: rotate(90deg);
+  box-shadow: var(--shadow-glow);
+}
+
+/* ==========================================================================
+   Mobile Navigation Links
+   ========================================================================== */
+.nav-mobile-content {
+  padding: var(--spacing-md);
+  height: calc(100vh - 80px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) transparent;
+}
+
+.nav-mobile-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.nav-mobile-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.nav-mobile-content::-webkit-scrollbar-thumb {
+  background: var(--gradient-primary);
+  border-radius: var(--radius-full);
+}
+
+.nav-mobile-links {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--spacing-xl) 0;
+}
+
+.nav-mobile-link {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md);
+  color: var(--color-light);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  font-size: 1.125rem;
+  font-weight: 500;
+  transition: all var(--transition-normal);
+  margin-bottom: var(--spacing-sm);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid transparent;
+}
+
+.nav-mobile-link::before {
+  content: '';
+  position: absolute;
+  left: -100%;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent,
+    rgba(var(--color-primary-rgb), 0.2),
+    transparent);
+  transition: left var(--transition-slow);
+}
+
+.nav-mobile-link:hover {
+  color: white;
+  background: rgba(var(--color-primary-rgb), 0.1);
+  border-color: rgba(var(--color-primary-rgb), 0.3);
+  padding-left: var(--spacing-lg);
+  transform: translateX(4px);
+}
+
+.nav-mobile-link:hover::before {
+  left: 100%;
+}
+
+.nav-mobile-link.active {
+  color: white;
+  background: linear-gradient(90deg,
+    rgba(var(--color-primary-rgb), 0.2) 0%,
+    rgba(var(--color-primary-rgb), 0.1) 100%);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.4);
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.1),
+    0 0 15px rgba(var(--color-primary-rgb), 0.3);
+}
+
+.nav-mobile-link.active::after {
+  content: '';
+  position: absolute;
+  right: var(--spacing-md);
+  width: 8px;
+  height: 8px;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-full);
+  animation: pulse var(--pulse-duration) ease-in-out infinite;
+}
+
+/* ==========================================================================
+   Contact Info Section
+   ========================================================================== */
+.nav-contact-info {
+  margin-top: auto;
+  padding: var(--spacing-md);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.nav-contact-title {
+  color: var(--color-gray-light);
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.nav-contact-title::before {
+  content: '⚡';
+  font-size: 1rem;
+}
+
+.nav-contact-phone {
+  display: flex;
+  align-items: center;
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.125rem;
+  transition: all var(--transition-normal);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  background: rgba(var(--color-primary-rgb), 0.05);
+}
+
+.nav-contact-phone:hover {
+  color: white;
+  background: rgba(var(--color-primary-rgb), 0.2);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.nav-contact-icon {
+  margin-right: var(--spacing-sm);
+  font-size: 1.25rem;
+  filter: drop-shadow(0 2px 4px rgba(var(--color-primary-rgb), 0.3));
+}
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(15px);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0.5;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(var(--color-primary-rgb), 0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 
+      var(--shadow-inner),
+      var(--shadow-glow),
+      0 0 0 1px rgba(var(--color-primary-rgb), 0.2);
+  }
+  50% {
+    box-shadow: 
+      var(--shadow-inner),
+      0 0 25px rgba(var(--color-primary-rgb), 0.4),
+      0 0 0 1px rgba(var(--color-primary-rgb), 0.3);
+  }
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .navbar-container {
+    padding: 0 var(--spacing-sm);
+  }
+  
+  .nav-link {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-menu-desktop {
+    display: none;
+  }
+  
+  .navbar-toggle {
+    display: block;
+  }
+  
+  .navbar-logo img {
+    height: 40px;
+  }
+  
+  .navbar {
+    padding: 0.75rem 0;
+  }
+  
+  body {
+    padding-top: 72px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .nav-link {
+    font-size: 0.8125rem;
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  .nav-mobile-menu,
+  .nav-overlay {
+    display: none;
+  }
+  
+  body {
+    padding-top: 80px;
+  }
+}
+
+/* Tablet Optimization */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+  .nav-mobile-menu {
+    width: 350px;
+  }
+}
+
+/* Large Mobile Optimization */
+@media (max-width: 768px) and (min-width: 481px) {
+  .nav-mobile-menu {
+    width: 350px;
+  }
+}
+
+/* Small Mobile Optimization */
+@media (max-width: 480px) {
+  .nav-mobile-menu {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .navbar-container {
+    padding: 0 1rem;
+  }
+  
+  .nav-mobile-link {
+    font-size: 1rem;
+  }
+}
+
+/* ==========================================================================
+   Advanced Features
+   ========================================================================== */
+
+/* Glass Morphism Effect */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Gradient Text */
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hover Effects */
+.hover-lift {
+  transition: transform var(--transition-normal);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+}
+
+.hover-glow {
+  transition: box-shadow var(--transition-normal);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(var(--color-primary-rgb), 0.4);
+}
+
+/* Loading Skeleton (for future enhancement) */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.1) 75%
+  );
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ==========================================================================
+   Dark Mode Overrides (System Preference)
+   ========================================================================== */
+@media (prefers-color-scheme: dark) {
+  .navbar {
+    background: rgba(15, 23, 42, 0.95);
+  }
+  
+  .nav-mobile-menu {
+    background: linear-gradient(160deg, 
+      #0f172a 0%,
+      #1e293b 100%);
+  }
+}
+
+/* ==========================================================================
+   Reduced Motion Support
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .navbar-logo img {
+    animation: none;
+  }
+  
+  .nav-link,
+  .nav-mobile-link {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   High Contrast Mode
+   ========================================================================== */
+@media (prefers-contrast: high) {
+  .navbar {
+    border: 2px solid white;
+  }
+  
+  .nav-link,
+  .nav-mobile-link {
+    border: 1px solid currentColor;
+  }
+  
+  .nav-link.active,
+  .nav-mobile-link.active {
+    border: 2px solid var(--color-primary);
+  }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+@media print {
+  .navbar {
+    position: static !important;
+    background: white !important;
+    color: black !important;
+    border-bottom: 2px solid black;
+    box-shadow: none !important;
+  }
+  
+  .navbar-logo img {
+    filter: none !important;
+    animation: none !important;
+  }
+  
+  .nav-mobile-menu,
+  .nav-overlay,
+  .navbar-toggle {
+    display: none !important;
+  }
+  
+  .navbar-menu-desktop {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   Custom Scrollbar
+   ========================================================================== */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gradient-primary);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+/* ==========================================================================
+   Firefox Scrollbar
+   ========================================================================== */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) var(--color-dark);
+}
