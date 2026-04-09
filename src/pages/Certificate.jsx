@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Shield, Award, CheckCircle, AlertCircle, Download, FileText, User, Calendar, BookOpen, Loader2 } from "lucide-react";
+import { Search, Shield, Award, CheckCircle, AlertCircle, FileText, User, Calendar, BookOpen, Loader2 } from "lucide-react";
 import Papa from "papaparse";
 import SEO from "../components/SEO";
 import './Certificate.css';
@@ -182,14 +182,7 @@ export default function Certificate() {
                   </div>
                   <div className="space-y-8">
                     <DetailItem icon={<Calendar />} label="ISSUE DATE" value={result['Date'] || result['Issue Date'] || result['IssueDate'] || "—"} />
-                    <DetailItem icon={<Award />} label="RECORD STATUS" value="Active & Officially Valid" color="text-emerald-400" />
-                    
-                    <button 
-                      onClick={() => window.print()}
-                      className="w-full mt-6 flex items-center justify-center gap-3 py-4 bg-gray-800/80 hover:bg-gray-700/80 text-white rounded-xl transition-all font-bold border border-gray-700/50 backdrop-blur-sm shadow-xl"
-                    >
-                      <Download className="w-5 h-5" /> Download / Print Verification
-                    </button>
+                    <DetailItem icon={<Award />} label="RECORD STATUS" value={result['Status'] || "Verified & Active"} color={String(result['Status']).toLowerCase() === 'pending' ? 'text-yellow-400' : String(result['Status']).toLowerCase() === 'under review' ? 'text-blue-400' : String(result['Status']).toLowerCase() === 'revoked' ? 'text-red-500' : 'text-emerald-400'} />
                   </div>
                 </div>
 
