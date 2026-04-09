@@ -221,7 +221,7 @@ export default function Certificate() {
                   <div className="space-y-8">
                     <DetailItem icon={<FileText />} label="CERTIFICATE ID" value={result['Certificate ID'] || result['ID'] || result['CertificateId'] || Object.values(result)[0]} highlight />
                     <DetailItem icon={<User />} label="RECIPIENT NAME" value={result['Student Name'] || result['Name'] || result['StudentName'] || Object.values(result)[1]} />
-                    <DetailItem icon={<BookOpen />} label="PROGRAM / DOMAIN" value={result['Course'] || result['Project'] || result['Internship'] || result['Program'] || "Specialized Certification"} />
+                    <DetailItem icon={<BookOpen />} label="COURSE / PROJECT" value={result['Course'] || result['Project'] || result['Internship'] || result['Program'] || "Specialized Certification"} />
                   </div>
                   <div className="space-y-8">
                     <DetailItem icon={<Calendar />} label="ISSUE DATE" value={result['Date'] || result['Issue Date'] || result['IssueDate'] || "—"} />
