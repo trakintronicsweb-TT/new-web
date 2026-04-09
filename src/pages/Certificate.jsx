@@ -11,7 +11,7 @@ export default function Certificate() {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
-  const [result, setResult] = useState(null);
+  const [results, setResults] = useState([]); // Changed to array for multiple results
   const [error, setError] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
 
@@ -46,7 +46,7 @@ export default function Certificate() {
 
     setLoading(true);
     setError(null);
-    setResult(null);
+    setResults([]);
     setHasSearched(true);
 
     try {
@@ -55,16 +55,16 @@ export default function Certificate() {
         currentData = await fetchCertificates();
       }
 
-      // Case-insensitive search
-      const found = currentData.find(row => {
+      // Case-insensitive search - returns ALL matches
+      const matches = currentData.filter(row => {
         // Search in all columns for the query
         return Object.values(row).some(val => 
           String(val).toLowerCase().trim() === searchQuery.toLowerCase().trim()
         );
       });
 
-      if (found) {
-        setResult(found);
+      if (matches.length > 0) {
+        setResults(matches);
       } else {
         setError("Invalid Certificate ID or Name. Please verify and try again.");
       }
@@ -134,9 +134,11 @@ export default function Certificate() {
               </button>
             </div>
           </form>
-          <p className="text-gray-500 text-xs mt-4 text-center font-medium uppercase tracking-widest opacity-80">
-            Secure Real-time Verification System
-          </p>
+          {results.length > 0 && (
+            <p className="text-cyan-400 text-xs mt-4 text-center font-bold uppercase tracking-widest animate-pulse">
+              Found {results.length} Matching Records
+            </p>
+          )}
         </motion.div>
 
         {/* Results Section */}
@@ -152,88 +154,93 @@ export default function Certificate() {
               <div className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mb-4"></div>
               <p className="text-cyan-400/60 font-medium animate-pulse">Consulting Secure Registry...</p>
             </motion.div>
-          ) : result ? (
+          ) : results.length > 0 ? (
             <motion.div
-              key="result"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="max-w-3xl mx-auto"
+              key="results"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-8 max-w-7xl mx-auto"
             >
-              <div className="glass glow-border rounded-3xl overflow-hidden relative shadow-2xl">
-                 {/* Dynamic Status Header */}
-                 {(() => {
-                   const status = String(result['Status'] || '').toLowerCase();
-                   let config = {
-                     title: "Verification Confirmed",
-                     sub: "Valid Certification Record Identified",
-                     icon: <CheckCircle className="w-10 h-10 text-emerald-400" />,
-                     colorClass: "cert-header-success",
-                     textColor: "text-emerald-400",
-                     bgIcon: "bg-emerald-500/20"
-                   };
+              {results.map((result, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="glass glow-border rounded-3xl overflow-hidden relative shadow-2xl h-full flex flex-col"
+                >
+                  {/* Dynamic Status Header */}
+                  {(() => {
+                    const status = String(result['Status'] || '').toLowerCase();
+                    let config = {
+                      title: "Verification Confirmed",
+                      sub: "Valid Certification Record Identified",
+                      icon: <CheckCircle className="w-10 h-10 text-emerald-400" />,
+                      colorClass: "cert-header-success",
+                      textColor: "text-emerald-400",
+                      bgIcon: "bg-emerald-500/20"
+                    };
 
-                   if (status === 'pending') {
-                     config = {
-                       title: "Status: Pending",
-                       sub: "Certificate is awaiting final processing",
-                       icon: <Loader2 className="w-10 h-10 text-yellow-500 animate-spin" />,
-                       colorClass: "bg-yellow-500/10 border-b border-yellow-500/10",
-                       textColor: "text-yellow-500",
-                       bgIcon: "bg-yellow-500/20"
-                     };
-                   } else if (status === 'under review') {
-                     config = {
-                       title: "Status: Under Review",
-                       sub: "Credential is being verified by our technical team",
-                       icon: <Search className="w-10 h-10 text-blue-400" />,
-                       colorClass: "bg-blue-500/10 border-b border-blue-500/10",
-                       textColor: "text-blue-400",
-                       bgIcon: "bg-blue-500/20"
-                     };
-                   } else if (status === 'revoked') {
-                     config = {
-                       title: "Status: Revoked",
-                       sub: "This certificate is no longer officially valid",
-                       icon: <AlertCircle className="w-10 h-10 text-red-500" />,
-                       colorClass: "bg-red-500/10 border-b border-red-500/10",
-                       textColor: "text-red-500",
-                       bgIcon: "bg-red-500/20"
-                     };
-                   }
+                    if (status === 'pending') {
+                      config = {
+                        title: "Status: Pending",
+                        sub: "Certificate is awaiting final processing",
+                        icon: <Loader2 className="w-10 h-10 text-yellow-500 animate-spin" />,
+                        colorClass: "bg-yellow-500/10 border-b border-yellow-500/10",
+                        textColor: "text-yellow-500",
+                        bgIcon: "bg-yellow-500/20"
+                      };
+                    } else if (status === 'under review') {
+                      config = {
+                        title: "Status: Under Review",
+                        sub: "Credential is being verified by technical team",
+                        icon: <Search className="w-10 h-10 text-blue-400" />,
+                        colorClass: "bg-blue-500/10 border-b border-blue-500/10",
+                        textColor: "text-blue-400",
+                        bgIcon: "bg-blue-500/20"
+                      };
+                    } else if (status === 'revoked') {
+                      config = {
+                        title: "Status: Revoked",
+                        sub: "This certificate is no longer officially valid",
+                        icon: <AlertCircle className="w-10 h-10 text-red-500" />,
+                        colorClass: "bg-red-500/10 border-b border-red-500/10",
+                        textColor: "text-red-500",
+                        bgIcon: "bg-red-500/20"
+                      };
+                    }
 
-                   return (
-                     <div className={`${config.colorClass} p-10 text-center relative overflow-hidden`}>
-                       <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-                         <Award className="w-64 h-64" />
-                       </div>
-                       <div className={`inline-flex p-4 ${config.bgIcon} rounded-full mb-6 shadow-lg`}>
-                         {config.icon}
-                       </div>
-                       <h3 className={`text-3xl font-black ${config.textColor} mb-2`}>{config.title}</h3>
-                       <p className="text-gray-400 font-medium">{config.sub}</p>
-                     </div>
-                   );
-                 })()}
+                    return (
+                      <div className={`${config.colorClass} p-8 text-center relative overflow-hidden`}>
+                        <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                          <Award className="w-48 h-48" />
+                        </div>
+                        <div className={`inline-flex p-3 ${config.bgIcon} rounded-full mb-4 shadow-lg`}>
+                          {React.cloneElement(config.icon, { className: "w-8 h-8 " + config.textColor })}
+                        </div>
+                        <h3 className={`text-2xl font-black ${config.textColor} mb-1 transition-all`}>{config.title}</h3>
+                        <p className="text-gray-400 text-sm font-medium">{config.sub}</p>
+                      </div>
+                    );
+                  })()}
 
-                {/* Certificate Details */}
-                <div className="p-8 md:p-14 grid md:grid-cols-2 gap-12">
-                  <div className="space-y-8">
-                    <DetailItem icon={<FileText />} label="CERTIFICATE ID" value={result['Certificate ID'] || result['CertificateId'] || result['ID'] || Object.values(result)[0]} highlight />
-                    <DetailItem icon={<User />} label="RECIPIENT NAME" value={result['Student Name'] || result['Name'] || result['StudentName'] || Object.values(result)[1]} />
-                    <DetailItem icon={<BookOpen />} label="COURSE / PROJECT" value={result['Course / Project'] || result['Course'] || result['Project'] || result['Internship'] || result['Program'] || "Specialized Certification"} />
+                  {/* Certificate Details */}
+                  <div className="p-8 flex-grow grid md:grid-cols-1 gap-6">
+                    <div className="space-y-6">
+                      <DetailItem icon={<FileText />} label="CERTIFICATE ID" value={result['Certificate ID'] || result['CertificateId'] || result['ID'] || Object.values(result)[0]} highlight />
+                      <DetailItem icon={<User />} label="RECIPIENT NAME" value={result['Student Name'] || result['Name'] || result['StudentName'] || Object.values(result)[1]} />
+                      <DetailItem icon={<BookOpen />} label="COURSE / PROJECT" value={result['Course / Project'] || result['Course'] || result['Project'] || result['Internship'] || result['Program'] || "Specialized Certification"} />
+                      <DetailItem icon={<Calendar />} label="ISSUE DATE" value={result['Issue Date'] || result['Date'] || result['IssueDate'] || "—"} />
+                    </div>
                   </div>
-                  <div className="space-y-8">
-                    <DetailItem icon={<Calendar />} label="ISSUE DATE" value={result['Issue Date'] || result['Date'] || result['IssueDate'] || "—"} />
-                    <DetailItem icon={<Award />} label="RECORD STATUS" value={result['Status'] || "Verified & Active"} color={String(result['Status']).toLowerCase() === 'pending' ? 'text-yellow-400' : String(result['Status']).toLowerCase() === 'under review' ? 'text-blue-400' : String(result['Status']).toLowerCase() === 'revoked' ? 'text-red-500' : 'text-emerald-400'} />
-                  </div>
-                </div>
 
-                {/* Disclaimer */}
-                <div className="bg-gray-900/60 p-6 border-t border-gray-800/50 text-center text-[10px] text-gray-500 uppercase tracking-widest font-bold">
-                  TRAKIN TRONICS Digital Integrity Proof • {new Date().getFullYear()} Official Record
-                </div>
-              </div>
+                  {/* Disclaimer */}
+                  <div className="bg-gray-900/60 p-4 border-t border-gray-800/50 text-center text-[10px] text-gray-500 uppercase tracking-widest font-bold">
+                    TRAKIN TRONICS Digital Integrity Proof
+                  </div>
+                </motion.div>
+              ))}
             </motion.div>
           ) : error ? (
             <motion.div
@@ -258,9 +265,9 @@ export default function Certificate() {
                 </div>
               </div>
             </motion.div>
-          ) : hasSearched && (
+          ) : hasSearched && results.length === 0 && !error ? (
              <div className="text-center text-gray-500 py-12">No results found for your query.</div>
-          )}
+          ) : null}
         </AnimatePresence>
       </div>
     </div>
@@ -274,7 +281,7 @@ function DetailItem({ icon, label, value, highlight, color = "text-white" }) {
         {React.cloneElement(icon, { className: "w-3 h-3" })}
         {label}
       </div>
-      <div className={`text-xl font-bold leading-tight ${highlight ? "text-cyan-400 font-mono" : color}`}>
+      <div className={`text-lg font-bold leading-tight ${highlight ? "text-cyan-400 font-mono" : color}`}>
         {value}
       </div>
     </div>
