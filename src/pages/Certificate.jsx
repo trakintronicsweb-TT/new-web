@@ -161,17 +161,60 @@ export default function Certificate() {
               className="max-w-3xl mx-auto"
             >
               <div className="glass glow-border rounded-3xl overflow-hidden relative shadow-2xl">
-                {/* Success Header */}
-                <div className="cert-header-success p-10 text-center relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-                    <Award className="w-64 h-64" />
-                  </div>
-                  <div className="inline-flex p-4 bg-emerald-500/20 rounded-full mb-6 shadow-lg shadow-emerald-500/20">
-                    <CheckCircle className="w-10 h-10 text-emerald-400" />
-                  </div>
-                  <h3 className="text-3xl font-black text-emerald-400 mb-2">Verification Confirmed</h3>
-                  <p className="text-gray-400 font-medium">Valid Certification Record Identified</p>
-                </div>
+                 {/* Dynamic Status Header */}
+                 {(() => {
+                   const status = String(result['Status'] || '').toLowerCase();
+                   let config = {
+                     title: "Verification Confirmed",
+                     sub: "Valid Certification Record Identified",
+                     icon: <CheckCircle className="w-10 h-10 text-emerald-400" />,
+                     colorClass: "cert-header-success",
+                     textColor: "text-emerald-400",
+                     bgIcon: "bg-emerald-500/20"
+                   };
+
+                   if (status === 'pending') {
+                     config = {
+                       title: "Status: Pending",
+                       sub: "Certificate is awaiting final processing",
+                       icon: <Loader2 className="w-10 h-10 text-yellow-500 animate-spin" />,
+                       colorClass: "bg-yellow-500/10 border-b border-yellow-500/10",
+                       textColor: "text-yellow-500",
+                       bgIcon: "bg-yellow-500/20"
+                     };
+                   } else if (status === 'under review') {
+                     config = {
+                       title: "Status: Under Review",
+                       sub: "Credential is being verified by our technical team",
+                       icon: <Search className="w-10 h-10 text-blue-400" />,
+                       colorClass: "bg-blue-500/10 border-b border-blue-500/10",
+                       textColor: "text-blue-400",
+                       bgIcon: "bg-blue-500/20"
+                     };
+                   } else if (status === 'revoked') {
+                     config = {
+                       title: "Status: Revoked",
+                       sub: "This certificate is no longer officially valid",
+                       icon: <AlertCircle className="w-10 h-10 text-red-500" />,
+                       colorClass: "bg-red-500/10 border-b border-red-500/10",
+                       textColor: "text-red-500",
+                       bgIcon: "bg-red-500/20"
+                     };
+                   }
+
+                   return (
+                     <div className={`${config.colorClass} p-10 text-center relative overflow-hidden`}>
+                       <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                         <Award className="w-64 h-64" />
+                       </div>
+                       <div className={`inline-flex p-4 ${config.bgIcon} rounded-full mb-6 shadow-lg`}>
+                         {config.icon}
+                       </div>
+                       <h3 className={`text-3xl font-black ${config.textColor} mb-2`}>{config.title}</h3>
+                       <p className="text-gray-400 font-medium">{config.sub}</p>
+                     </div>
+                   );
+                 })()}
 
                 {/* Certificate Details */}
                 <div className="p-8 md:p-14 grid md:grid-cols-2 gap-12">
