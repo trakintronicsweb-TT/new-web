@@ -1,57 +1,87 @@
-﻿/* src/pages/Certificate.css */
-
 .certificate-page {
-  padding: 2rem;
-  background-color: #f9f9f9;
   min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #030712;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
 }
 
-.certificate-header {
-  text-align: center;
-  margin-bottom: 3rem;
+.bg-blobs {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
 }
 
-.certificate-header h1 {
-  font-size: 2.5rem;
-  color: #0a3d62;
-  margin-bottom: 0.5rem;
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
 }
 
-.certificate-header p {
-  font-size: 1.2rem;
-  color: #333;
+.blob-1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #06b6d4 0%, transparent 70%);
+  top: -100px;
+  right: -100px;
 }
 
-.certificate-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  justify-content: center;
+.blob-2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #3b82f6 0%, transparent 70%);
+  bottom: -50px;
+  left: -50px;
 }
 
-.certificate-card {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 1.5rem;
-  width: 300px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+.animate-gradient {
+  background: linear-gradient(to right, #22d3ee, #3b82f6, #8b5cf6);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-anim 3s linear infinite;
 }
 
-.certificate-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+@keyframes gradient-anim {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
 }
 
-.certificate-card h2 {
-  font-size: 1.5rem;
-  color: #0a3d62;
-  margin-bottom: 0.5rem;
+.glass {
+  background: rgba(17, 24, 39, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.certificate-card p {
-  font-size: 1rem;
-  color: #555;
+.glow-border {
+  position: relative;
+}
+
+.glow-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(45deg, rgba(6, 182, 212, 0.2), transparent 40%, transparent 60%, rgba(59, 130, 246, 0.2));
+  border-radius: inherit;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.cert-header-success {
+  background-color: rgba(16, 185, 129, 0.1);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+}
+
+@media print {
+  .certificate-page {
+    background: white !important;
+    color: black !important;
+  }
 }

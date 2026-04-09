@@ -38,6 +38,7 @@ export default function Navbar() {
     { path: "/services", label: "Services" },
     { path: "/gallery", label: "Gallery" },
     { path: "/projectbooking", label: "Project Booking" },
+    { path: "/verify-certificate", label: "Verify Certificate" },
     { path: "/contact", label: "Contact" },
   ];
 

@@ -13,6 +13,7 @@ const About = lazy(() => import('./pages/About'));
 const Services = lazy(() => import('./pages/Services'));
 const Gallery = lazy(() => import('./pages/Gallery'));
 const ProjectBooking = lazy(() => import('./pages/ProjectBooking'));
+const Certificate = lazy(() => import('./pages/Certificate'));
 const Contact = lazy(() => import('./pages/Contact'));
 
 const PageLoader = () => (
@@ -32,6 +33,7 @@ function AnimatedRoutes() {
           <Route path="/services" element={<Services />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/projectbooking" element={<ProjectBooking />} />
+          <Route path="/verify-certificate" element={<Certificate />} />
           <Route path="/contact" element={<Contact />} />
         </Routes>
       </Suspense>
