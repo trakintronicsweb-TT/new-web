@@ -219,12 +219,12 @@ export default function Certificate() {
                 {/* Certificate Details */}
                 <div className="p-8 md:p-14 grid md:grid-cols-2 gap-12">
                   <div className="space-y-8">
-                    <DetailItem icon={<FileText />} label="CERTIFICATE ID" value={result['Certificate ID'] || result['ID'] || result['CertificateId'] || Object.values(result)[0]} highlight />
+                    <DetailItem icon={<FileText />} label="CERTIFICATE ID" value={result['Certificate ID'] || result['CertificateId'] || result['ID'] || Object.values(result)[0]} highlight />
                     <DetailItem icon={<User />} label="RECIPIENT NAME" value={result['Student Name'] || result['Name'] || result['StudentName'] || Object.values(result)[1]} />
-                    <DetailItem icon={<BookOpen />} label="COURSE / PROJECT" value={result['Course'] || result['Project'] || result['Internship'] || result['Program'] || "Specialized Certification"} />
+                    <DetailItem icon={<BookOpen />} label="COURSE / PROJECT" value={result['Course / Project'] || result['Course'] || result['Project'] || result['Internship'] || result['Program'] || "Specialized Certification"} />
                   </div>
                   <div className="space-y-8">
-                    <DetailItem icon={<Calendar />} label="ISSUE DATE" value={result['Date'] || result['Issue Date'] || result['IssueDate'] || "—"} />
+                    <DetailItem icon={<Calendar />} label="ISSUE DATE" value={result['Issue Date'] || result['Date'] || result['IssueDate'] || "—"} />
                     <DetailItem icon={<Award />} label="RECORD STATUS" value={result['Status'] || "Verified & Active"} color={String(result['Status']).toLowerCase() === 'pending' ? 'text-yellow-400' : String(result['Status']).toLowerCase() === 'under review' ? 'text-blue-400' : String(result['Status']).toLowerCase() === 'revoked' ? 'text-red-500' : 'text-emerald-400'} />
                   </div>
                 </div>
